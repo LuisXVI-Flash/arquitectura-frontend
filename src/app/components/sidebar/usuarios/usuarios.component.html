@@ -37,7 +37,7 @@
                                 <tr>
                                     <th data-priority="1">Nombre</th>
                                     <th>Correo</th>
-                                    <th>Foto</th>
+                                    <th>Usuario</th>
                                     <th>Rol</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
@@ -45,10 +45,10 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let user of userList">
-                                    <td data-priority="1">{{user.nombre}}</td>
+                                    <td data-priority="1">{{user.nombres + " " + user.apellidos}}</td>
                                     <td>{{user.correo}}</td>
-                                    <td>{{user.img}}</td>
-                                    <td>{{user.rol}}</td>
+                                    <td>{{user.usuario}}</td>
+                                    <td>{{user.idcargo_trabajador}}</td>
                                     <td>{{user.estado}}</td>
                                     <td style="display: flex;">
                                         <button (click)="showEditar(user)" class="mr-5 btn btn-sm btn-editar icon icon-left"

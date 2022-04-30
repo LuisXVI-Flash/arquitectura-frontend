@@ -13,48 +13,44 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   addUser(
-    firstName: string, age: number,
-    email: string, 
+    firstName: string, lastname: string,
+    email: string, username: string, 
     password: string, roleId: string) {
-    const body = {
-      "nombre": firstName,
-      "edad": age,
-      "correo": email,
-      "password": password,
-      "rol": roleId,
-      "img": ''
+    let body = {
+      nombre: firstName,
+      apellido: lastname,
+      correo: email,
+      usuario: username,
+      password: password,
+      rol: roleId,
     };
 
-    return this.http.post<any>(`${this.endpoint}api/usuarios`, body);
+    return this.http.post<any>(`${this.endpoint}user/add`, body);
   }
 
   getList() {
-    return this.http.get<listaUsers>(`${this.endpoint}api/usuarios?limit=`)
+    return this.http.get<any>(`${this.endpoint}user/list`)
   }
   
   updateUser(
-    id: string,
-    firstName: string, img: string,
-    email: string, roleId: string
+    id: string, firstName: string, lastName: string,
+    email: string, username: string, password: string, roleId: string, active: string
   ) {
-    let headers = new HttpHeaders()
-    this.token = localStorage.getItem('access_token')
-    headers = headers.set('x-token', this.token)
-    const body = {
-      "nombre": firstName,
-      "correo": email,
-      "img": img,
-      "rol": roleId
+    let body = {
+      id: id,
+      nombre: firstName,
+      apellido: lastName,
+      correo: email,
+      username: username,
+      password: password,
+      rol: roleId,
+      active: active
     }
 
-    return this.http.put<any>(`${this.endpoint}api/usuarios/${id}`, body, {headers: headers});
+    return this.http.put<any>(`${this.endpoint}user/edit/`, body);
   }
 
   deleteUser(id: string) {
-    console.log(id)
-    let headers = new HttpHeaders()
-    this.token = localStorage.getItem('access_token')
-    headers = headers.set('x-token', this.token)
-    return this.http.delete<any>(`${this.endpoint}api/usuarios/${id}`, {headers: headers});
+    return this.http.delete<any>(`${this.endpoint}user/delete/${id}`);
   }
 }

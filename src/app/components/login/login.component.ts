@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.loginForm.getRawValue().correo,
       this.loginForm.getRawValue().password
     ).subscribe((result: any) => {
-        localStorage.setItem('access_token', result.token)
+        localStorage.setItem('access_token', result.result)
         this.router.navigate(['/dashboard'])
     }, (err: any) => {
         let error = err.error.msg

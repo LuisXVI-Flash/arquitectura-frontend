@@ -1,11 +1,11 @@
 export interface User {
-    rol: string 
-    estado: boolean
-    google: boolean
-    nombre: string
+    idtrabajador: number
+    nombres: string
+    apellidos: string
     correo: string
-    img: string
-    uid: string
+    usuario: string
+    estado: number
+    idcargo_trabajador: number
 }
 export interface listaUsers {
     usuario: User[]
