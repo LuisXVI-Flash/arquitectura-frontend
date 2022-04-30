@@ -23,7 +23,7 @@ export class Authenticationinterceptor implements HttpInterceptor {
         const authToken = this.authService.getToken()
         req = req.clone({
             setHeaders: {
-                authorization: String(authToken)
+                Authorization: "Bearer " + authToken
             }
         })
         return next.handle(req).pipe(
