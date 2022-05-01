@@ -59,7 +59,7 @@ export class DispositivosComponent implements OnInit {
 
   showEditar(product: any): void {
     this.modalService.show('Editar Producto',this.getUpdateForm(product), true)
-      .then(() => {this.updateProduct(product._id)})
+      .then(() => {this.updateProduct(product.idproducto)})
       .catch((err) => console.log(err))
   }
 
@@ -72,7 +72,7 @@ export class DispositivosComponent implements OnInit {
 
   showEliminar(product: any): void {
     this.modalService.show('Advertencia', this.getDeleteForm(), true)
-      .then(() => { this.deleteProduct(product._id) })
+      .then(() => { this.deleteProduct(product.idproducto) })
       .catch((err) => { console.log(err) });
   }
 
@@ -82,8 +82,8 @@ export class DispositivosComponent implements OnInit {
 
   getProducts() {
     this.productService.getList().subscribe((response: any) => {
-        this.productList = response.productos
-        this.dtTrigger.next(response.productos)
+        this.productList = response.result
+        this.dtTrigger.next(response.result)
     }, (err: any) => {
 
     })
@@ -91,64 +91,32 @@ export class DispositivosComponent implements OnInit {
 
   getRegisterForm() {
     return `<div id="update-form">
-    <label>Nombre: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-file-signature"></i> </span>
-        <input type="text" name="first-name" id="first-name" placeholder="Nombre" class="form-control"">
+    <label>Cód. Identificación: </label>
+    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-sim-card"></i> </span>
+        <input type="text" name="id" id="id" placeholder="Cod. Identificación" class="form-control"">
     </div>
-    <label>Descripción: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-file-medical-alt"></i> </span>
-        <input type="text" name="descripcion" id="descripcion" placeholder="Descripción" class="form-control" autocomplete="off" ">
-    </div>
-    <label>Precio: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-dollar-sign"></i> </span>
-        <input type="number" name="precio" id="precio" placeholder="Precio" class="form-control" autocomplete="off" ">
-    </div>
-    <label>Id Producto: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-fingerprint"></i> </span>
-        <input type="text" name="idProducto" id="idProducto" placeholder="idProducto" class="form-control" autocomplete="off" ">
-    </div>
-    <label>PAC: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fab fa-buffer"></i> </span>
-        <input type="text" name="pac" id="pac" placeholder="PAC" class="form-control" autocomplete="off"">
-    </div>
-    <label>Imagen: </label>
-    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-images"></i> </span>
-        <input type="text" name="img" id="img" placeholder="Imagen" class="form-control" autocomplete="off">
+    <label>Codigo PAC: </label>
+    <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-microchip"></i> </span>
+        <input type="text" name="pac" id="pac" placeholder="Codigo PAC" class="form-control" autocomplete="off" ">
     </div>
   </div>`;
   }
 
   getUpdateForm(product: any) {
     return `<div id="update-form">
-        <label>Nombre: </label>
+        <label>Cód. Identificación: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-file-signature"></i> </span>
-            <input type="text" name="first-name" id="first-name" placeholder="Nombre" class="form-control" value="${ product.nombre }">
+            <input type="text" name="id" id="id" placeholder="Cod. Identificacion" class="form-control" value="${ product.id }">
         </div>
-        <label>Descripción: </label>
+        <label>Codigo PAC: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-file-medical-alt"></i> </span>
-            <input type="text" name="descripcion" id="descripcion" placeholder="Descripción" class="form-control" autocomplete="off" value="${ product.descripcion }">
+            <input type="text" name="pac" id="pac" placeholder="Codigo PAC" class="form-control" autocomplete="off" value="${ product.pac }">
         </div>
-        <label>Precio: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-dollar-sign"></i> </span>
-            <input type="number" name="precio" id="precio" placeholder="Precio" class="form-control" autocomplete="off" value="${ product.precio }">
-        </div>
-        <label>Id Producto: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-fingerprint"></i> </span>
-            <input type="text" name="idProducto" id="idProducto" placeholder="idProducto" class="form-control" autocomplete="off" value="${ product.idProducto }">
-        </div>
-        <label>PAC: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fab fa-buffer"></i> </span>
-            <input type="text" name="pac" id="pac" placeholder="PAC" class="form-control" autocomplete="off" value="${ product.mac }">
-        </div>
-        <label>Imagen: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-images"></i> </span>
-            <input type="text" name="img" id="img" placeholder="Imagen" class="form-control" autocomplete="off" value="${ product.img }">
-        </div>
-        <label>Disponible: </label>
+        <label>Estado: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-info-circle"></i> </span>
             <select name="" id="active" class="form-control">
-                <option value="true" ${ product.estado === true ? 'selected' : '' }>Habilitado</option>
-                <option value="false" ${ product.estado === false ? 'selected' : '' }>Desahabilitado</option>
+                <option value="1" ${ product.estado === true ? 'selected' : '' }>Habilitado</option>
+                <option value="0" ${ product.estado === false ? 'selected' : '' }>Desahabilitado</option>
             </select>
         </div>
       </div>`;
@@ -163,16 +131,11 @@ export class DispositivosComponent implements OnInit {
   }
 
   updateProduct(productId: any) {
-    let firstName = (<HTMLInputElement>document.getElementById('first-name')).value;
-    let descripcion = (<HTMLInputElement>document.getElementById('descripcion')).value;
-    let precio = parseInt((<HTMLInputElement>document.getElementById('precio')).value);
-    let idProducto = (<HTMLInputElement>document.getElementById('idProducto')).value;
-    let mac = (<HTMLInputElement>document.getElementById('pac')).value;
-    let img = (<HTMLInputElement>document.getElementById('img')).value;
+    let idProducto = (<HTMLInputElement>document.getElementById('id')).value;
+    let pac = (<HTMLInputElement>document.getElementById('pac')).value;
     let estado = (<HTMLInputElement>document.getElementById('active')).value;
-    let booleano = String(estado) === "true"
 
-    this.productService.updateProduct(productId, firstName, descripcion, precio, idProducto, mac, img, booleano ).subscribe((result: any) => {
+    this.productService.updateProduct(productId, idProducto, pac, estado).subscribe((result: any) => {
         Swal.fire('Atención','Se actualizó correctamente el producto', 'success')
         this.rerenderProducts()
     }, (err: any) => {
@@ -181,14 +144,10 @@ export class DispositivosComponent implements OnInit {
   }
 
   saveProduct() : any {
-    let firstName = (<HTMLInputElement>document.getElementById('first-name')).value;
-    let descripcion = (<HTMLInputElement>document.getElementById('descripcion')).value;
-    let precio = parseInt((<HTMLInputElement>document.getElementById('precio')).value);
-    let idProducto = (<HTMLInputElement>document.getElementById('idProducto')).value;
-    let mac = (<HTMLInputElement>document.getElementById('pac')).value;
-    let img = (<HTMLInputElement>document.getElementById('img')).value;
+    let id = (<HTMLInputElement>document.getElementById('id')).value;
+    let pac = (<HTMLInputElement>document.getElementById('pac')).value;
 
-    this.productService.addProduct(firstName, descripcion, precio, idProducto, mac, img).subscribe((result) => {
+    this.productService.addProduct(id, pac).subscribe((result) => {
         Swal.fire('Atención','Se creó correctamente el producto', 'success')
         this.rerenderProducts()
     }, (err) => {
@@ -200,7 +159,7 @@ export class DispositivosComponent implements OnInit {
 
   deleteProduct(id: any) {
     this.productService.deleteProduct(id).subscribe((result: any) => {
-      if (result.ok) {
+      if (result.status === 200) {
         Swal.fire('Atención','Se eliminó correctamente el producto', 'success')
         this.rerenderProducts()
       } else {
@@ -220,12 +179,8 @@ export class DispositivosComponent implements OnInit {
   }
 
   clearForm() {
-    (<HTMLInputElement>document.getElementById('first-name')).value = '';
-    (<HTMLInputElement>document.getElementById('descripcion')).value = '';
-    (<HTMLInputElement>document.getElementById('precio')).value = '';
-    (<HTMLInputElement>document.getElementById('idProducto')).value = '';
+    (<HTMLInputElement>document.getElementById('id')).value = '';
     (<HTMLInputElement>document.getElementById('pac')).value = '';
-    (<HTMLInputElement>document.getElementById('img')).value = '';
   }
 
   rerender(): void {

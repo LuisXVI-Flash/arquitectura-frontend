@@ -12,53 +12,31 @@ export class ProductService {
   endpoint: string = environment.be_url
   constructor(private http: HttpClient) { }
 
-  addProduct(firstName: string, descripcion: string, precio: number, idProducto: string, mac: string, img: string) {
-    let headers = new HttpHeaders()
-    this.token = localStorage.getItem('access_token')
-    headers = headers.set('x-token', this.token)
+  addProduct(id: string, pac: string) {
     const body = {
-      "nombre": firstName,
-      "precio": precio,
-      "descripcion": descripcion,
-      "categoria": "61a7933a3daea00016e4f7cd",
-      "img": img,
-      "idProducto": idProducto,
-      "mac":mac,
-      "activo": false
+      id: id,
+      pac: pac,
+      estado: 0
     };
     
-    return this.http.post<any>(`${this.endpoint}api/productos`, body, {headers: headers});
+    return this.http.post<any>(`${this.endpoint}product/add`, body);
   }
 
   getList() {
-    return this.http.get<listaProducto>(`${this.endpoint}api/productos`)
+    return this.http.get<any>(`${this.endpoint}product/list`)
   }
 
-  updateProduct(
-    productId: string, firstName: string, descripcion: string, precio: number, idProducto: string, mac: string, img: string, estado: boolean 
-  ) {
-    let headers = new HttpHeaders()
-    this.token = localStorage.getItem('access_token')
-    headers = headers.set('x-token', this.token)
+  updateProduct(productId: number, id: string, pac: string, estado: string) {
     const body = {
-      "nombre": firstName,
-      "precio": precio,
-      "descripcion": descripcion,
-      "disponible": true,
-      "estado": estado,
-      "categoria": "61a7933a3daea00016e4f7cd",
-      "img": img,
-      "idProducto": idProducto,
-      "mac":mac,
-      "activo": false
+      productId: productId,
+      id: id,
+      pac: pac,
+      estado: estado
     }
-    return this.http.put<any>(`${this.endpoint}api/productos/${productId}`, body, {headers: headers});
+    return this.http.put<any>(`${this.endpoint}product/edit`, body);
   }
 
   deleteProduct(id: string) {
-    let headers = new HttpHeaders()
-    this.token = localStorage.getItem('access_token')
-    headers = headers.set('x-token', this.token)
-    return this.http.delete<any>(`${this.endpoint}api/productos/${id}`, {headers: headers});
+    return this.http.delete<any>(`${this.endpoint}product/delete/${id}`);
   }
 }
