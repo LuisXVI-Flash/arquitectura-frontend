@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { ClientService } from 'src/app/services/client/client.service';
 import { ModalService } from 'src/app/services/modal/modal.service';
-import { UserService } from 'src/app/services/user/user.service';
 import Swal from 'sweetalert2';
 import { ModalComponent } from '../../modal/modal.component';
 
@@ -19,11 +19,11 @@ export class ClientsComponent implements OnInit {
   dtElement!: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>()
-  userList: any
-  userListAdmin: any
+  clientList: any
+  clientListAdmin: any
   showModal: boolean = false;
   constructor(
-    private userService: UserService,
+    private clientService: ClientService,
     private modalService: ModalService
   ) { }
 
@@ -54,23 +54,21 @@ export class ClientsComponent implements OnInit {
       },
       responsive: true
     };
-    this.getUsers()
+    this.getClients()
   }
 
   ngAfterViewInit(): void {
     this.modalService.register(this.modalComponent)
   }
 
-  getUsers() {
-    this.userService.getList().subscribe((response: any) => {
-        const array = response.usuario.filter((a: any,i: any) => {
-          if (a.rol == "USER_ROLE") {
+  getClients() {
+    this.clientService.listClient().subscribe((response: any) => {
+        const array = response.result.filter((a: any,i: any) => {
             return a
-          }
         })
-        this.userListAdmin = array
-        this.userList = this.userListAdmin
-        this.dtTrigger.next(this.userListAdmin)
+        this.clientListAdmin = array
+        this.clientList = this.clientListAdmin
+        this.dtTrigger.next(this.clientListAdmin)
     }, (err: any) => {
 
     })
@@ -80,30 +78,30 @@ export class ClientsComponent implements OnInit {
     return rol == "USER_ROLE"
   }
 
-  rerenderUsers() {
-    this.userService.getList().subscribe((response: any) => {
-        this.userList = response.result
+  rerenderClients() {
+    this.clientService.listClient().subscribe((response: any) => {
+        this.clientList = response.result
         this.rerender()
     }, (err: any) => {
     })
   }
 
-  showAddUserModal(): void {
+  showAddClientModal(): void {
     this.showModal = true;
     this.modalService.show('Registro de Cliente', this.getRegisterForm(), true)
-      .then(() => { this.saveUser() })
+      .then(() => { this.saveClient() })
       .catch(() => { this.clearForm() });
   }
 
-  showEditar(user: any): void {
-    this.modalService.show('Editar cliente',this.getUpdateForm(user), true)
-      .then(() => {this.updateUser(user.uid)})
+  showEditar(client: any): void {
+    this.modalService.show('Editar cliente',this.getUpdateForm(client), true)
+      .then(() => {this.updateClient(client.idcliente)})
       .catch((err) => console.log(err))
   }
 
-  showEliminar(user: any): void {
+  showEliminar(client: any): void {
     this.modalService.show('Advertencia', this.getDeleteForm(), true)
-      .then(() => { this.deleteUser(user.uid) })
+      .then(() => { this.deleteClient(client.idcliente) })
       .catch((err) => { console.log(err) });
   }
 
@@ -111,57 +109,48 @@ export class ClientsComponent implements OnInit {
     return `<div id="register-form">
         <label>Nombres: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-user"></i> </span>
-            <input type="text" name="first-name" id="first-name" placeholder="Nombre" class="form-control">
+            <input type="text" name="first-name" id="first-name" placeholder="Nombres" class="form-control" autocomplete="off">
         </div>
-        <label>Edad: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="far fa-calendar-alt"></i> </span>
-            <input type="number" name="edad" id="edad" placeholder="Edad" class="form-control">
+        <label>Apellidos: </label>
+        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="far fa-user"></i> </span>
+            <input type="text" name="last-name" id="last-name" placeholder="Apellidos" class="form-control" autocomplete="off">
         </div>
         <label>E-mail: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-envelope"></i> </span>
             <input type="email" name="email" id="email" placeholder="E-mail" class="form-control" autocomplete="off">
         </div>
-        <label>Contraseña: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-lock"></i> </span>
-            <input type="text" name="password" id="password" placeholder="Contraseña" class="form-control" autocomplete="off">
+        <label>D.N.I.: </label>
+        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-portrait"></i> </span>
+            <input type="number" name="dni" id="dni" placeholder="D.N.I." class="form-control" autocomplete="off">
         </div>
-        <label>Rol: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-key"></i> </span>
-            <select name="" id="role" class="form-control">
-                <option value="ADMIN_ROLE">Administrador</option>
-                <option value="USER_ROLE">Usuario</option>
-            </select>
+        <label>Celular: </label>
+        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-phone"></i> </span>
+            <input type="number" name="celular" id="celular" placeholder="Celular" class="form-control" autocomplete="off">
         </div>
       </div>`;
   }
 
-  getUpdateForm(user: any) {
+  getUpdateForm(client: any) {
     return `<div id="update-form">
         <label>Nombres: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-user"></i> </span>
-            <input type="text" name="first-name" id="first-name" placeholder="Nombre" class="form-control" value="${ user.nombre }">
+            <input type="text" name="first-name" id="first-name" placeholder="Nombres" class="form-control" value="${ client.nombres }">
+        </div>
+        <label>Apellidos: </label>
+        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="far fa-user"></i> </span>
+            <input type="text" name="last-name" id="last-name" placeholder="Apellidos" class="form-control" autocomplete="off" value="${ client.apellidos }">
         </div>
         <label>E-mail: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-envelope"></i> </span>
-            <input type="email" name="email" id="email" placeholder="E-mail" class="form-control" autocomplete="off" value="${ user.correo }">
+            <input type="email" name="email" id="email" placeholder="E-mail" class="form-control" autocomplete="off" value="${ client.correo }">
         </div>
-        <label>E-mail: </label>
+        <label>D.N.I.: </label>
         <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-portrait"></i> </span>
-            <input type="text" name="img" id="img" placeholder="Imagen" class="form-control" autocomplete="off" value="${ user.img }">
+            <input type="number" name="dni" id="dni" placeholder="D.N.I." class="form-control" autocomplete="off" value="${ client.dni }">
         </div>
-        <label>Rol: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-key"></i> </span>
-            <select name="" id="role" class="form-control">
-                <option value="ADMIN_ROLE" ${ user.rol === 'ADMIN_ROLE' ? 'selected' : '' }>Administrador</option>
-                <option value="USER_ROLE" ${ user.rol === 'USER_ROLE' ? 'selected' : '' }>Usuario</option>
-            </select>
-        </div>
-        <label>Estado: </label>
-        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-info-circle"></i> </span>
-            <select name="" id="active" class="form-control">
-                <option value="1" ${ user.estado === true ? 'selected' : '' }>Habilitado</option>
-                <option value="0" ${ user.estado === false ? 'selected' : '' }>Desahabilitado</option>
-            </select>
+        <label>Celular: </label>
+        <div class="form-group input-group-prepend"><span class="input-group-text"><i class="fas fa-phone"></i> </span>
+            <input type="number" name="celular" id="celular" placeholder="Celular" class="form-control" autocomplete="off" value="${ client.celular }">
         </div>
       </div>`;
   }
@@ -174,16 +163,16 @@ export class ClientsComponent implements OnInit {
           `;
   }
 
-  saveUser() : any {
+  saveClient() : any {
     let firstName = (<HTMLInputElement>document.getElementById('first-name')).value;
-    let age = parseInt((<HTMLInputElement>document.getElementById('edad')).value);
+    let lastname = (<HTMLInputElement>document.getElementById('last-name')).value;
     let email = (<HTMLInputElement>document.getElementById('email')).value;
-    let password = (<HTMLInputElement>document.getElementById('password')).value;
-    let role = (<HTMLInputElement>document.getElementById('role')).value;
+    let dni = (<HTMLInputElement>document.getElementById('dni')).value;
+    let celular = (<HTMLInputElement>document.getElementById('celular')).value;
 
-    this.userService.addUser(firstName, age, email, password, role).subscribe((result) => {
+    this.clientService.addClient(firstName, lastname, email, dni, celular).subscribe((result) => {
         Swal.fire('Atención','Se creó correctamente el cliente', 'success')
-        this.rerenderUsers()
+        this.rerenderClients()
     }, (err) => {
       Swal.fire('Atención',err.message, 'error')
     });
@@ -191,25 +180,26 @@ export class ClientsComponent implements OnInit {
     this.clearForm();
   }
 
-  updateUser(userId: any) {
+  updateClient(idcliente: any) {
     let firstName = (<HTMLInputElement>document.getElementById('first-name')).value;
+    let lastname = (<HTMLInputElement>document.getElementById('last-name')).value;
     let email = (<HTMLInputElement>document.getElementById('email')).value;
-    let img = (<HTMLInputElement>document.getElementById('img')).value;
-    let role = (<HTMLInputElement>document.getElementById('role')).value;
+    let dni = (<HTMLInputElement>document.getElementById('dni')).value;
+    let celular = (<HTMLInputElement>document.getElementById('celular')).value;
 
-    this.userService.updateUser(userId, firstName, img, email, role ).subscribe((result: any) => {
+    this.clientService.updateClient(idcliente, firstName, lastname, email, dni, celular).subscribe((result: any) => {
         Swal.fire('Atención','Se actualizó correctamente el cliente', 'success')
-        this.rerenderUsers()
+        this.rerenderClients()
     }, (err: any) => {
       Swal.fire('Atención',err.message, 'error')
     })
   }
 
-  deleteUser(id: any) {
-    this.userService.deleteUser(id).subscribe((result: any) => {
-      if (result.ok) {
+  deleteClient(id: any) {
+    this.clientService.deleteClient(id).subscribe((result: any) => {
+      if (result.status === 200) {
         Swal.fire('Atención','Se eliminó correctamente el cliente', 'success')
-        this.rerenderUsers()
+        this.rerenderClients()
       } else {
         Swal.fire('Atención',result.message, 'warning')
       }
@@ -222,9 +212,8 @@ export class ClientsComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('first-name')).value = '';
     (<HTMLInputElement>document.getElementById('last-name')).value = '';
     (<HTMLInputElement>document.getElementById('email')).value = '';
-    (<HTMLInputElement>document.getElementById('phone')).value = '';
-    (<HTMLInputElement>document.getElementById('username')).value = '';
-    (<HTMLInputElement>document.getElementById('password')).value = '';
+    (<HTMLInputElement>document.getElementById('dni')).value = '';
+    (<HTMLInputElement>document.getElementById('celular')).value = '';
   }
 
   rerender(): void {
@@ -232,7 +221,7 @@ export class ClientsComponent implements OnInit {
       // Destroy the table first
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
-      this.getUsers()
+      this.getClients()
     });
   }
 
