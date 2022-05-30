@@ -1,29 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
-import { ModalService } from 'src/app/services/modal/modal.service';
 import { SolicitudService } from 'src/app/services/solicitud/solicitud.service';
-import { ModalComponent } from '../../modal/modal.component';
 
 @Component({
-  selector: 'app-solicit-general',
-  templateUrl: './solicit-general.component.html',
-  styleUrls: ['./solicit-general.component.css']
+  selector: 'app-solicit-atendid',
+  templateUrl: './solicit-atendid.component.html',
+  styleUrls: ['./solicit-atendid.component.css']
 })
-export class SolicitGeneralComponent implements OnInit {
+export class SolicitAtendidComponent implements OnInit {
 
-  @ViewChild('modalRegistro')
-  modalComponent!: ModalComponent;
   @ViewChild(DataTableDirective, {static: false})
   dtElement!: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>()
   solicitudList: any
-  showModal: boolean = false;
-  constructor(
-    private solicitudService: SolicitudService,
-    private modalService: ModalService
-  ) { }
+  
+  constructor(private solicitudService: SolicitudService) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -55,12 +48,8 @@ export class SolicitGeneralComponent implements OnInit {
     this.getSolicitudes()
   }
 
-  ngAfterViewInit(): void {
-    this.modalService.register(this.modalComponent)
-  }
-
   getSolicitudes() {
-    this.solicitudService.getUnattended().subscribe((response: any) => {
+    this.solicitudService.getAttended().subscribe((response: any) => {
         this.solicitudList = response.result
         this.dtTrigger.next(response.result)
     }, (err: any) => {
