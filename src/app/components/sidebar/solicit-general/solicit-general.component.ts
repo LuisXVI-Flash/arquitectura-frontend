@@ -60,7 +60,7 @@ export class SolicitGeneralComponent implements OnInit {
   }
 
   getSolicitudes() {
-    this.solicitudService.getUnattended().subscribe((response: any) => {
+    this.solicitudService.getAttended().subscribe((response: any) => {
         this.solicitudList = response.result
         this.dtTrigger.next(response.result)
     }, (err: any) => {
