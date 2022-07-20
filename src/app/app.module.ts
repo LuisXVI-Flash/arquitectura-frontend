@@ -9,11 +9,13 @@ import { LoginComponent } from './components/login/login.component';
 
 import { DataTablesModule } from 'angular-datatables';
 import { Authenticationinterceptor } from './services/auth/authenticationconfig.interceptor';
+import { SolicitudProductoComponent } from './components/solicitud-producto/solicitud-producto.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    SolicitudProductoComponent,
   ],
   imports: [
     BrowserModule,
