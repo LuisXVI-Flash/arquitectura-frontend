@@ -19,6 +19,20 @@ export class SolicitudClienteService {
     return this.http.post<any>(`${this.endpoint}product/find`, body)
   }
 
+  saveRequest (nombres: any, apellidos: any, email: any, dni: any, celular: any) {
+    let idProducto = localStorage.getItem('token_id')
+    const body = {
+      nombres: nombres,
+      apellidos: apellidos,
+      correo: email,
+      dni: dni,
+      celular: celular,
+      idproducto: idProducto
+    }
+
+    return this.http.post<any>(`${this.endpoint}solicitud/create`, body)
+  }
+
   get isLogged (): boolean {
     let authToken = localStorage.getItem('token_id')
     return (authToken !== null)

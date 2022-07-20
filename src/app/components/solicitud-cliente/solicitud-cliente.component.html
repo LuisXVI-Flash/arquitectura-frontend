@@ -1,0 +1,58 @@
+<div class="data-client">
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+            <div class="card">
+                <h5 class="card-header">Datos del Cliente (Ingese sus datos para contacto)</h5>
+                <div class="card-body">
+                    <form [formGroup]="clientForm" novalidate (ngSubmit)="request()">
+                        <div class="form-group">
+                            <label for="nombres" class="col-form-label">Nombres</label>
+                            <input id="nombres" type="text" class="form-control" placeholder="Nombres" required formControlName="nombres"
+                            [ngClass]="{
+                                'border-danger' : nombres.invalid && (nombres.dirty || nombres.touched),
+                                'border-success' : nombres.valid && (nombres.dirty || nombres.touched)
+                                }">
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidos" class="col-form-label">Apellidos</label>
+                            <input id="apellidos" type="text" class="form-control" placeholder="Apellidos" required formControlName="apellidos"
+                            [ngClass]="{
+                                'border-danger' : apellidos.invalid && (apellidos.dirty || apellidos.touched),
+                                'border-success' : apellidos.valid && (apellidos.dirty || apellidos.touched)
+                                }">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Email </label>
+                            <input id="correo" type="email" placeholder="name@example.com" class="form-control" required formControlName="correo"
+                            [ngClass]="{
+                                'border-danger' : correo.invalid && (correo.dirty || correo.touched),
+                                'border-success' : correo.valid && (correo.dirty || correo.touched)
+                                }">
+                        </div>
+                        <div class="form-group">
+                            <label for="dni" class="col-form-label">D.N.I.</label>
+                            <input id="dni" type="number" class="form-control" placeholder="D.N.I." required formControlName="dni"
+                            [ngClass]="{
+                                'border-danger' : dni.invalid && (dni.dirty || dni.touched),
+                                'border-success' : dni.valid && (dni.dirty || dni.touched)
+                                }">
+                        </div>                            
+                        <div class="form-group">
+                            <label for="celular" class="col-form-label">Celular</label>
+                            <input id="celular" type="number" class="form-control" placeholder="Celular" required formControlName="celular"
+                            [ngClass]="{
+                                'border-danger' : celular.invalid && (celular.dirty || celular.touched),
+                                'border-success' : celular.valid && (celular.dirty || celular.touched)
+                                }">
+                        </div>
+                        <div class="button-submit">
+                            <button class="btn btn-primary" type="submit">
+                                Grabar Solicitud de activación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -10,12 +10,14 @@ import { LoginComponent } from './components/login/login.component';
 import { DataTablesModule } from 'angular-datatables';
 import { Authenticationinterceptor } from './services/auth/authenticationconfig.interceptor';
 import { SolicitudProductoComponent } from './components/solicitud-producto/solicitud-producto.component';
+import { SolicitudClienteComponent } from './components/solicitud-cliente/solicitud-cliente.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SolicitudProductoComponent,
+    SolicitudClienteComponent,
   ],
   imports: [
     BrowserModule,
